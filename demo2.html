@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>条形图</title>
+	<script src="d3.js" type="text/javascript"></script>
+	
+</head>
+<body>
+
+	<script>
+
+	var dataset = [1.2, 2.3, 0.9, 1.5, 3.3];
+	var color = ["red", "blue", "pink", "yellow", "black"];
+
+	var ordinal = d3.scaleOrdinal()
+					.domain(dataset)
+					.range(color);
+
+
+	var max = d3.max(dataset);
+
+	var linear = d3.scaleLinear()
+					.domain([0, max])
+					.range([0, 300]);
+
+	
+	var width = 300;  //画布的宽度
+	var height = 300;   //画布的高度
+
+	var svg = d3.select("body")     //选择文档中的body元素
+	    .append("svg")          //添加一个svg元素
+	    .attr("width", width)       //设定宽度
+	    .attr("height", height);    //设定高度
+	var rectHeight = 25;   //每个矩形所占的像素高度(包括空白)
+
+	svg.selectAll("rect")
+	    .data(dataset)
+	    .enter()
+	    .append("rect")
+	    .attr("y",20)
+	    .attr("x",function(d,i){
+	         return i * rectHeight;
+	    })
+	    .attr("height",function(d){
+	         return linear(d);
+	    })
+	    .attr("width",rectHeight-2)
+	    .attr("fill",function(d){
+	    	return ordinal(d);
+	    });
+
+  //为坐标轴定义一个线性比例尺  
+        var xScale = d3.scaleLinear()  
+            .domain([0,d3.max(dataset)])  
+            .range([0,300]);  
+        //定义一个坐标轴  
+        var xAxis = d3.axisLeft(xScale)//定义一个axis，由bottom可知，是朝下的  
+            .ticks(7);//设置刻度数目  
+        svg.append("g")  
+            .attr("transform","translate("+40+","+20+")") 
+            .call(xAxis);  
+	
+
+	</script>  
+</body>
+</html>
